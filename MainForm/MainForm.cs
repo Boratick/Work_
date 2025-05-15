@@ -52,6 +52,14 @@ namespace TerminologyApp.Form
             btnShowChain.Click += BtnShowChain_Click;
 
             txtChain = new() { Top = btnShowChain.Bottom + 10, Left = 20, Width = 500, Height = 100, Multiline = true, ReadOnly = true };
+            Button btnSave = new() { Text = "Зберегти в JSON", Top = txtChain.Bottom + 10, Left = 20 };
+            btnSave.Click += BtnSave_Click;
+
+            Button btnLoad = new() { Text = "Завантажити з JSON", Top = btnSave.Top, Left = btnSave.Right + 10 };
+            btnLoad.Click += BtnLoad_Click;
+
+            this.Controls.AddRange(new Control[] { btnSave, btnLoad });
+
 
             this.Controls.AddRange(new Control[]
             {
@@ -108,5 +116,32 @@ namespace TerminologyApp.Form
 
             txtChain.Text = string.Join(Environment.NewLine, chain.Select(t => $"{t.Name}: {t.Definition}"));
         }
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            using SaveFileDialog dialog = new();
+            dialog.Filter = "JSON файли (*.json)|*.json|Усі файли (*.*)|*.*";
+            dialog.Title = "Зберегти терміни у JSON";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                _repository.SaveToFile(dialog.FileName);
+                MessageBox.Show("Дані збережено успішно!");
+            }
+        }
+
+        private void BtnLoad_Click(object sender, EventArgs e)
+        {
+            using OpenFileDialog dialog = new();
+            dialog.Filter = "JSON файли (*.json)|*.json|Усі файли (*.*)|*.*";
+            dialog.Title = "Завантажити терміни з JSON";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                _repository.LoadFromFile(dialog.FileName);
+                UpdateTermList();
+                MessageBox.Show("Дані завантажено успішно!");
+            }
+        }
+
     }
 }

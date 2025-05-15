@@ -1,15 +1,16 @@
-namespace Курсовая
+using System;
+using System.Windows.Forms;
+
+namespace TerminologyApp
 {
-    internal static class Program
+    static class Program
     {
+        [STAThread] 
         static void Main()
         {
-            
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new TerminologyApp.Form.MainForm());
-
-
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form.MainForm());
         }
     }
 }
