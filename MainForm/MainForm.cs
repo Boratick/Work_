@@ -25,7 +25,41 @@ namespace TerminologyApp.Form
         private TextBox txtChain;
         private Button btnAdd;
         private Button btnShowChain;
+        private void BtnShowChain_Click(object sender, EventArgs e)
+        {
+            if (lstTerms.SelectedItem == null) return;
 
+            string selected = lstTerms.SelectedItem.ToString();
+            var chain = _navigator.GetChain(selected);
+
+            txtChain.Text = string.Join(Environment.NewLine, chain.Select(t => $"{t.Name}: {t.Definition}"));
+        }
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            using SaveFileDialog dialog = new();
+            dialog.Filter = "JSON файли (*.json)|*.json|Усі файли (*.*)|*.*";
+            dialog.Title = "Зберегти терміни у JSON";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                _repository.SaveToFile(dialog.FileName);
+                MessageBox.Show("Дані збережено успішно!");
+            }
+        }
+
+        private void BtnLoad_Click(object sender, EventArgs e)
+        {
+            using OpenFileDialog dialog = new();
+            dialog.Filter = "JSON файли (*.json)|*.json|Усі файли (*.*)|*.*";
+            dialog.Title = "Завантажити терміни з JSON";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                _repository.LoadFromFile(dialog.FileName);
+                UpdateTermList();
+                MessageBox.Show("Дані завантажено успішно!");
+            }
+        }
 
         private void InitializeComponent()
         {
@@ -107,41 +141,8 @@ namespace TerminologyApp.Form
             txtChain.Clear();
         }
 
-        private void BtnShowChain_Click(object sender, EventArgs e)
-        {
-            if (lstTerms.SelectedItem == null) return;
-
-            string selected = lstTerms.SelectedItem.ToString();
-            var chain = _navigator.GetChain(selected);
-
-            txtChain.Text = string.Join(Environment.NewLine, chain.Select(t => $"{t.Name}: {t.Definition}"));
-        }
-        private void BtnSave_Click(object sender, EventArgs e)
-        {
-            using SaveFileDialog dialog = new();
-            dialog.Filter = "JSON файли (*.json)|*.json|Усі файли (*.*)|*.*";
-            dialog.Title = "Зберегти терміни у JSON";
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                _repository.SaveToFile(dialog.FileName);
-                MessageBox.Show("Дані збережено успішно!");
-            }
-        }
-
-        private void BtnLoad_Click(object sender, EventArgs e)
-        {
-            using OpenFileDialog dialog = new();
-            dialog.Filter = "JSON файли (*.json)|*.json|Усі файли (*.*)|*.*";
-            dialog.Title = "Завантажити терміни з JSON";
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                _repository.LoadFromFile(dialog.FileName);
-                UpdateTermList();
-                MessageBox.Show("Дані завантажено успішно!");
-            }
-        }
+        
 
     }
+
 }

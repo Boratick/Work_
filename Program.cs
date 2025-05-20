@@ -8,6 +8,7 @@ namespace TerminologyApp
         [STAThread] 
         static void Main()
         {
+            //check
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form.MainForm());
