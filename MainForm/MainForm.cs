@@ -10,7 +10,7 @@ namespace TerminologyApp.Form
     {
         private TermRepository _repository = new();
         private TermNavigator _navigator;
-
+        private List<string> _categories = new List<string> { "Фізика", "Хімія", "Біологія", "Історія" }; 
 
         public MainForm()
         {
@@ -21,22 +21,28 @@ namespace TerminologyApp.Form
         private TextBox txtName;
         private TextBox txtDefinition;
         private TextBox txtReferences;
+        private ComboBox cmbCategory; 
         private ListBox lstTerms;
         private TextBox txtChain;
         private Button btnAdd;
         private Button btnShowChain;
 
-
         private void InitializeComponent()
         {
             this.Text = "Термінологія";
             this.Width = 600;
-            this.Height = 500;
+            this.Height = 550; 
 
             Label lblName = new() { Text = "Назва терміну", Top = 20, Left = 20, Width = 120 };
             txtName = new() { Top = lblName.Bottom + 5, Left = 20, Width = 250 };
 
-            Label lblDefinition = new() { Text = "Визначення", Top = txtName.Bottom + 10, Left = 20, Width = 120 };
+            Label lblCategory = new() { Text = "Категорія", Top = txtName.Bottom + 10, Left = 20, Width = 120 };
+            cmbCategory = new() { Top = lblCategory.Bottom + 5, Left = 20, Width = 250 };
+            cmbCategory.Items.AddRange(_categories.ToArray());
+            cmbCategory.DropDownStyle = ComboBoxStyle.DropDown; 
+            cmbCategory.SelectedIndex = 0;
+
+            Label lblDefinition = new() { Text = "Визначення", Top = cmbCategory.Bottom + 10, Left = 20, Width = 120 };
             txtDefinition = new() { Top = lblDefinition.Bottom + 5, Left = 20, Width = 400 };
 
             Label lblReferences = new() { Text = "Посилання (через кому)", Top = txtDefinition.Bottom + 10, Left = 20, Width = 200 };
@@ -58,8 +64,7 @@ namespace TerminologyApp.Form
             Button btnLoad = new() { Text = "Завантажити з JSON", Top = btnSave.Top, Left = btnSave.Right + 10 };
             btnLoad.Click += BtnLoad_Click;
 
-            this.Controls.AddRange(new Control[] { btnSave, btnLoad });
-
+            this.Controls.AddRange(new Control[] { btnSave, btnLoad, lblCategory, cmbCategory });
 
             this.Controls.AddRange(new Control[]
             {
@@ -75,22 +80,31 @@ namespace TerminologyApp.Form
         {
             var name = txtName.Text.Trim();
             var def = txtDefinition.Text.Trim();
+            var category = cmbCategory.Text.Trim(); 
             var refs = txtReferences.Text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                          .Select(r => r.Trim())
                                          .ToList();
 
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(def))
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(def) || string.IsNullOrWhiteSpace(category))
             {
-                MessageBox.Show("Будь ласка, введіть назву та визначення терміну.");
+                MessageBox.Show("Будь ласка, введіть назву, категорію та визначення терміну.");
                 return;
             }
 
-            _repository.AddTerm(new Term(name, def, refs));
+            
+            if (!_categories.Contains(category))
+            {
+                _categories.Add(category);
+                cmbCategory.Items.Add(category);
+            }
+
+            _repository.AddTerm(new Term(name, def, category, refs));
             UpdateTermList();
             MessageBox.Show("Термін додано!");
             txtName.Clear();
             txtDefinition.Clear();
             txtReferences.Clear();
+            cmbCategory.SelectedIndex = 0;
         }
 
         private void UpdateTermList()
@@ -98,7 +112,7 @@ namespace TerminologyApp.Form
             lstTerms.Items.Clear();
             foreach (var term in _repository.GetAllTerms())
             {
-                lstTerms.Items.Add(term.Name);
+                lstTerms.Items.Add($"[{term.Category}] {term.Name}");
             }
         }
 
@@ -112,10 +126,12 @@ namespace TerminologyApp.Form
             if (lstTerms.SelectedItem == null) return;
 
             string selected = lstTerms.SelectedItem.ToString();
-            var chain = _navigator.GetChain(selected);
+            string termName = selected.Substring(selected.IndexOf(']') + 1).Trim();
+            var chain = _navigator.GetChain(termName);
 
-            txtChain.Text = string.Join(Environment.NewLine, chain.Select(t => $"{t.Name}: {t.Definition}"));
+            txtChain.Text = string.Join(Environment.NewLine, chain.Select(t => $"[{t.Category}] {t.Name}: {t.Definition}"));
         }
+
         private void BtnSave_Click(object sender, EventArgs e)
         {
             using SaveFileDialog dialog = new();
@@ -138,10 +154,18 @@ namespace TerminologyApp.Form
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 _repository.LoadFromFile(dialog.FileName);
+                
+                foreach (var term in _repository.GetAllTerms())
+                {
+                    if (!string.IsNullOrEmpty(term.Category) && !_categories.Contains(term.Category))
+                    {
+                        _categories.Add(term.Category);
+                        cmbCategory.Items.Add(term.Category);
+                    }
+                }
                 UpdateTermList();
                 MessageBox.Show("Дані завантажено успішно!");
             }
         }
-
     }
 }

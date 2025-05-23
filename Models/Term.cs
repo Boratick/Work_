@@ -10,12 +10,14 @@ namespace TerminologyApp.Models
     {
         public string Name { get; set; }
         public string Definition { get; set; }
+        public string Category { get; set; }
         public List<string> References { get; set; }
 
-        public Term(string name, string definition, List<string> references = null)
+        public Term(string name, string definition, string category, List<string> references = null)
         {
             Name = name;
             Definition = definition;
+            Category = category;
             References = references ?? new List<string>();
         }
     }

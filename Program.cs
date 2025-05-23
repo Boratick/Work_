@@ -1,16 +1,16 @@
 using System;
 using System.Windows.Forms;
 
-namespace TerminologyApp
+namespace SimpleCalculator
 {
     static class Program
     {
-        [STAThread] 
+        [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form.MainForm());
+            Application.Run(new TerminologyApp.Form.MainForm());
         }
     }
 }

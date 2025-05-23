@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Text.Json;
 
 namespace TerminologyApp.Models
 {
@@ -25,6 +24,7 @@ namespace TerminologyApp.Models
         }
 
         public List<Term> GetAllTerms() => terms.Values.ToList();
+
         public void SaveToFile(string path)
         {
             var json = JsonSerializer.Serialize(terms.Values.ToList(), new JsonSerializerOptions { WriteIndented = true });
@@ -39,9 +39,5 @@ namespace TerminologyApp.Models
             var loadedTerms = JsonSerializer.Deserialize<List<Term>>(json);
             terms = loadedTerms.ToDictionary(t => t.Name, t => t);
         }
-
     }
-        
-
-
-    }
+}
