@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace SimpleCalculator
+namespace TerminologyApp
 {
     static class Program
     {
@@ -10,7 +10,7 @@ namespace SimpleCalculator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TerminologyApp.Form.MainForm());
+            Application.Run(new MainForm());
         }
     }
 }
