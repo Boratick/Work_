@@ -29,6 +29,7 @@ namespace TerminologyApp.Form
 
         private void InitializeComponent()
         {
+            this.MinimumSize = new System.Drawing.Size(600, 550); 
             this.Text = "Термінологія";
             this.Width = 600;
             this.Height = 550; 
