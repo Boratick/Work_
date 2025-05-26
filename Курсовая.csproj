@@ -6,5 +6,6 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RestorePackages>true</RestorePackages>
+		<RestoreOnBuild>true</RestoreOnBuild>
 	</PropertyGroup>
 </Project>
