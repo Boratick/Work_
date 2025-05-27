@@ -15,7 +15,7 @@ namespace TerminologyApp
         {
             this.Text = "Термінологія";
             this.Size = new System.Drawing.Size(800, 600);
-
+            this.MinimumSize = new Size(760, 500); 
             MenuStrip menu = new MenuStrip();
             ToolStripMenuItem helpItem = new ToolStripMenuItem("Help");
             helpItem.Click += (s, e) => new HelpForm().ShowDialog();
