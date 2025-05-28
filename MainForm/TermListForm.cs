@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using TerminologyApp.Models;
 
@@ -8,6 +8,7 @@ namespace TerminologyApp.Forms
     {
         private DataGridView termsTable;
         private Button deleteButton;
+        private Button editButton;
         private ContextMenuStrip rightClickMenu;
         private TermListHandler handler;
 
@@ -46,13 +47,23 @@ namespace TerminologyApp.Forms
             };
             deleteButton.Click += DeleteButton_Click;
 
+            editButton = new Button
+            {
+                Text = "Редагувати",
+                Location = new System.Drawing.Point(120, 10),
+                Width = 100
+            };
+            editButton.Click += EditButton_Click;
+
             rightClickMenu = new ContextMenuStrip();
+            ToolStripMenuItem editMenuItem = new ToolStripMenuItem("Редагувати");
+            editMenuItem.Click += EditMenuItem_Click;
             ToolStripMenuItem deleteMenuItem = new ToolStripMenuItem("Видалити");
             deleteMenuItem.Click += DeleteMenuItem_Click;
-            rightClickMenu.Items.Add(deleteMenuItem);
+            rightClickMenu.Items.AddRange(new ToolStripMenuItem[] { editMenuItem, deleteMenuItem });
             termsTable.ContextMenuStrip = rightClickMenu;
 
-            this.Controls.AddRange(new Control[] { termsTable, deleteButton });
+            this.Controls.AddRange(new Control[] { termsTable, deleteButton, editButton });
         }
 
         private void TermsTable_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -70,6 +81,28 @@ namespace TerminologyApp.Forms
             else
             {
                 MessageBox.Show("Виберіть термін для видалення.");
+            }
+        }
+
+        private void EditButton_Click(object sender, EventArgs e)
+        {
+            if (termsTable.SelectedRows.Count > 0)
+            {
+                string termName = termsTable.SelectedRows[0].Cells["Назва"].Value.ToString();
+                handler.EditTerm(termName, termsTable);
+            }
+            else
+            {
+                MessageBox.Show("Виберіть термін для редагування.");
+            }
+        }
+
+        private void EditMenuItem_Click(object sender, EventArgs e)
+        {
+            if (termsTable.SelectedRows.Count > 0)
+            {
+                string termName = termsTable.SelectedRows[0].Cells["Назва"].Value.ToString();
+                handler.EditTerm(termName, termsTable);
             }
         }
 
