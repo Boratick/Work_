@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using TerminologyApp.Models;
 
@@ -12,10 +12,14 @@ namespace TerminologyApp.Forms
         private TextBox relatedTermsBox;
         private Button saveButton;
         private TermInputHandler handler;
+        private readonly Term _termToEdit;
+        private readonly bool _isEditMode; 
 
-        public TermInputForm()
+        public TermInputForm(Term termToEdit = null)
         {
             handler = new TermInputHandler();
+            _termToEdit = termToEdit;
+            _isEditMode = termToEdit != null;
             SetupControls();
         }
 
@@ -37,15 +41,36 @@ namespace TerminologyApp.Forms
             Label relatedLabel = new Label { Text = "Позначення (через кому):", Location = new System.Drawing.Point(20, 220) };
             relatedTermsBox = new TextBox { Location = new System.Drawing.Point(120, 220), Width = 400 };
 
-            saveButton = new Button { Text = "Зберегти термін", Location = new System.Drawing.Point(120, 260), Width = 100 };
+            saveButton = new Button
+            {
+                Text = _isEditMode ? "Оновити термін" : "Зберегти термін",
+                Location = new System.Drawing.Point(120, 260),
+                Width = 100
+            };
             saveButton.Click += SaveButton_Click;
+
+            
+            if (_isEditMode)
+            {
+                nameBox.Text = _termToEdit.Name;
+                definitionBox.Text = _termToEdit.Definition;
+                categoryBox.SelectedItem = _termToEdit.Category;
+                relatedTermsBox.Text = string.Join(", ", _termToEdit.RelatedTerms);
+            }
 
             this.Controls.AddRange(new Control[] { nameLabel, nameBox, definitionLabel, definitionBox, categoryLabel, categoryBox, relatedLabel, relatedTermsBox, saveButton });
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            handler.SaveTerm(nameBox, definitionBox, categoryBox, relatedTermsBox);
+            if (_isEditMode)
+            {
+                handler.UpdateTerm(_termToEdit.Name, nameBox, definitionBox, categoryBox, relatedTermsBox);
+            }
+            else
+            {
+                handler.SaveTerm(nameBox, definitionBox, categoryBox, relatedTermsBox);
+            }
         }
     }
 }
