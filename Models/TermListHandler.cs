@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using TerminologyApp.Forms;
@@ -42,6 +42,21 @@ namespace TerminologyApp.Models
                 {
                     LoadTerms(termsTable);
                 }
+            }
+        }
+
+        public void EditTerm(string termName, DataGridView termsTable)
+        {
+            Term term = TermManager.Terms.FirstOrDefault(t => t.Name == termName);
+            if (term != null)
+            {
+                TermInputForm editForm = new TermInputForm(term);
+                editForm.FormClosed += (s, e) => LoadTerms(termsTable); 
+                editForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show($"Термін '{termName}' не знайдено.");
             }
         }
     }
