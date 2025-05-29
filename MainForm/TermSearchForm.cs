@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 using TerminologyApp.Models;
 
@@ -36,8 +37,13 @@ namespace TerminologyApp.Forms
                 Width = 400,
                 Height = 150,
                 ReadOnly = true,
-                BorderStyle = BorderStyle.None
+                BorderStyle = BorderStyle.None,
+                DetectUrls = false
             };
+
+            detailsBox.MouseClick += DetailsBox_MouseClick;
+            detailsBox.MouseMove += DetailsBox_MouseMove;
+            detailsBox.Cursor = Cursors.IBeam; 
 
             this.Controls.AddRange(new Control[] { searchLabel, searchBox, resultsList, detailsBox });
         }
@@ -50,6 +56,41 @@ namespace TerminologyApp.Forms
         private void ResultsList_SelectedIndexChanged(object sender, EventArgs e)
         {
             handler.ShowTermDetails(resultsList, detailsBox);
+        }
+
+        private void DetailsBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            
+            handler.HandleHyperlinkClick(detailsBox, e.Location, resultsList, searchBox);
+        }
+
+        private void DetailsBox_MouseMove(object sender, MouseEventArgs e)
+        {
+       
+            int charIndex = detailsBox.GetCharIndexFromPosition(e.Location);
+            if (charIndex >= 0 && charIndex < detailsBox.Text.Length)
+            {
+               
+                int originalStart = detailsBox.SelectionStart;
+                int originalLength = detailsBox.SelectionLength;
+
+                detailsBox.SelectionStart = charIndex;
+                detailsBox.SelectionLength = 0;
+
+                
+                bool isHyperlink = detailsBox.SelectionColor == Color.Blue && detailsBox.SelectionFont.Underline;
+
+                
+                detailsBox.SelectionStart = originalStart;
+                detailsBox.SelectionLength = originalLength;
+
+                
+                detailsBox.Cursor = isHyperlink ? Cursors.Hand : Cursors.IBeam;
+            }
+            else
+            {
+                detailsBox.Cursor = Cursors.IBeam;
+            }
         }
 
         public void SelectTerm(string termName)
