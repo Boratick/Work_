@@ -6,8 +6,10 @@ using TerminologyApp.Models;
 
 namespace TerminologyApp.Models
 {
+    // Обробляє відображення та взаємодію зі списком термінів у таблиці.
     public class TermListHandler
     {
+        // Завантажує терміни до таблиці DataGridView, відображаючи назву, категорію та короткий опис.
         public void LoadTerms(DataGridView termsTable)
         {
             termsTable.Rows.Clear();
@@ -19,7 +21,8 @@ namespace TerminologyApp.Models
                 termsTable.Rows.Add(term.Name, term.Category, definitionPreview);
             }
         }
-
+        
+        // Відображає детальну інформацію про вибраний термін у новому вікні пошуку.
         public void ShowTermDetails(DataGridView termsTable, int rowIndex)
         {
             if (rowIndex >= 0)
@@ -31,6 +34,7 @@ namespace TerminologyApp.Models
             }
         }
 
+        // Видаляє вибраний термін із бази даних після підтвердження користувача.
         public void DeleteTerm(string termName, DataGridView termsTable)
         {
             DialogResult result = MessageBox.Show($"Ви впевнені, що хочете видалити '{termName}'?", "Підтвердити", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -45,6 +49,7 @@ namespace TerminologyApp.Models
             }
         }
 
+        // Відкриває форму редагування для вибраного терміна.
         public void EditTerm(string termName, DataGridView termsTable)
         {
             Term term = TermManager.Terms.FirstOrDefault(t => t.Name == termName);
