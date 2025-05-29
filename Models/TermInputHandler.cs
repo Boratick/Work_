@@ -4,9 +4,11 @@ using System.Windows.Forms;
 using TerminologyApp.Models;
 
 namespace TerminologyApp.Models
-{
+{    
+    // Обробляє введення та оновлення термінів через форму введення.
     public class TermInputHandler
-    {
+    {    
+        // Зберігає новий термін у базі даних після валідації введених даних.
         public void SaveTerm(TextBox nameBox, TextBox definitionBox, ComboBox categoryBox, TextBox relatedTermsBox)
         {
             if (string.IsNullOrWhiteSpace(nameBox.Text) || string.IsNullOrWhiteSpace(definitionBox.Text))
@@ -39,6 +41,7 @@ namespace TerminologyApp.Models
             categoryBox.SelectedIndex = -1;
         }
 
+        // Оновлює існуючий термін у базі даних після валідації введених даних.
         public void UpdateTerm(string originalName, TextBox nameBox, TextBox definitionBox, ComboBox categoryBox, TextBox relatedTermsBox)
         {
             if (string.IsNullOrWhiteSpace(nameBox.Text) || string.IsNullOrWhiteSpace(definitionBox.Text))
