@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace TerminologyApp.Models
 {
+    // Представляє термін у базі даних термінології, включаючи його назву, визначення, категорію та пов’язані терміни.
     public class Term
     {
         public string Name { get; set; }
