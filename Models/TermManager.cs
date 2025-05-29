@@ -6,12 +6,15 @@ using TerminologyApp.Models;
 
 namespace TerminologyApp.Models
 {
+    // Керує колекцією термінів, включаючи завантаження, збереження, оновлення та видалення термінів із бази даних.
     public static class TermManager
     {
         private static List<Term> termList = new List<Term>();
 
+         // Отримує список усіх термінів у базі даних.
         public static List<Term> Terms => termList;
 
+        // Завантажує всі терміни з JSON-файлів у директорії "Terms" до списку термінів.
         public static void GetTerms()
         {
             termList.Clear();
@@ -35,6 +38,7 @@ namespace TerminologyApp.Models
             }
         }
 
+        // Зберігає новий термін у списку та записує його у JSON-файл у директорії "Terms".
         public static void SaveTerm(Term term)
         {
             termList.Add(term);
@@ -43,6 +47,7 @@ namespace TerminologyApp.Models
             File.WriteAllText(path, JsonSerializer.Serialize(term, new JsonSerializerOptions { WriteIndented = true }));
         }
 
+        // Видаляє термін із бази даних за його назвою.
         public static (bool Success, string Message) RemoveTerm(string termName)
         {
             Term term = termList.Find(t => t.Name == termName);
@@ -71,7 +76,8 @@ namespace TerminologyApp.Models
                 return (false, $"Помилка видалення терміна '{termName}': {ex.Message}");
             }
         }
-
+        
+        // Оновлює існуючий термін у базі даних. 
         public static (bool Success, string Message) UpdateTerm(string originalName, Term updatedTerm)
         {
             Term existingTerm = termList.Find(t => t.Name == originalName);
